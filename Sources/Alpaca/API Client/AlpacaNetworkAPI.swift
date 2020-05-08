@@ -35,4 +35,26 @@ final class AlpacaNetworkAPI {
 		URLSession(configuration: configuration)
 	}()
 
+	enum API: String {
+
+		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
+			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
+			request.httpMethod = method
+			return request
+		}
+
+		func path(_ version: Alpaca.Version) -> String {
+			"\(version.rawValue)/\(rawValue)"
+		}
+
+		var method: String {
+			switch self {
+			default: return "GET"
+			}
+		}
+
+		case account
+
+	}
+
 }

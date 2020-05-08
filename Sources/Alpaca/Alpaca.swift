@@ -18,7 +18,7 @@ public final class Alpaca {
 
 	private let api: AlpacaNetworkAPI
 
-	public enum Version {
+	public enum Version: String {
 		case v2
 	}
 
