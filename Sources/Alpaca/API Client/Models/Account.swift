@@ -4,6 +4,13 @@ import Foundation
 /// including account status, funds available for trade, funds available for withdrawal,
 /// and various flags relevant to an account’s ability to trade.
 public struct Account: Codable, Hashable {
+
+	/// Helper to access accurate `Decimal` values, formatted from
+	/// `String` values from Alpaca’s API.
+	public var currencyValues: AccountCurrencyValues? {
+		AccountCurrencyValues(self)
+	}
+
 	/// Account ID.
 	public let id: String
 	/// Account number.
@@ -66,9 +73,6 @@ public struct Account: Codable, Hashable {
 	/// (your excess equity - equity minus margin value - times your margin multiplier).
 	public let regtBuyingPower: String
 
-	public var currencyValues: AccountCurrencyValues? {
-		AccountCurrencyValues(self)
-	}
 }
 
 public struct AccountCurrencyValues {

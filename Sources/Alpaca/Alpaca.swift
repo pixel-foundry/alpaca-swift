@@ -29,7 +29,7 @@ public final class Alpaca {
 
 	#if canImport(Combine)
 	@available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-	var accountPublisher: AnyPublisher<Account, Error> {
+	var account: AnyPublisher<Account, Error> {
 		var cancel: Cancel?
 		return Future<Account, Error> { completion in
 			cancel = self.account(completion)

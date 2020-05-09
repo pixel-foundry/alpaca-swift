@@ -67,9 +67,11 @@ public final class AlpacaAPI {
 		URLSession(configuration: configuration)
 	}()
 
-	public enum Path: String {
+	public enum Path {
 
 		case account
+		case orders(Int?)
+		case placeOrder(OrderRequest)
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
 			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
@@ -78,12 +80,23 @@ public final class AlpacaAPI {
 		}
 
 		func path(_ version: Alpaca.Version) -> String {
-			"\(version.rawValue)/\(rawValue)"
+			"\(version.rawValue)/\(value)"
 		}
 
 		var method: String {
 			switch self {
+			case .placeOrder: return "POST"
 			default: return "GET"
+			}
+		}
+
+		var value: String {
+			switch self {
+			case .account: return "account"
+			case .orders(let orderID):
+				if let id = orderID { return "orders/\(id)" }
+				return "orders"
+			case .placeOrder: return "orders"
 			}
 		}
 
