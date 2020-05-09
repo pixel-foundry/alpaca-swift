@@ -36,3 +36,13 @@ public extension Alpaca {
 	}
 
 }
+
+extension URLRequest {
+
+	func authenticate(with key: Alpaca.Key) -> URLRequest {
+		var request = self
+		key.authenticate(request: &request)
+		return request
+	}
+
+}

@@ -3,7 +3,7 @@ import Foundation
 import FoundationNetworking
 #endif
 
-public final class AlpacaNetworkAPI {
+public final class AlpacaAPI {
 
 	init(
 		configuration: URLSessionConfiguration,
@@ -17,12 +17,12 @@ public final class AlpacaNetworkAPI {
 		self.key = key
 	}
 
-	private let configuration: URLSessionConfiguration
-	private let mode: Alpaca.Mode
-	private let version: Alpaca.Version
-	private let key: Alpaca.Key
+	let configuration: URLSessionConfiguration
+	let mode: Alpaca.Mode
+	let version: Alpaca.Version
+	let key: Alpaca.Key
 
-	private lazy var endpoint: URL = {
+	lazy var endpoint: URL = {
 		switch mode {
 		case .paper:
 			return URL(string: "https://paper-api.alpaca.markets")!
@@ -31,19 +31,28 @@ public final class AlpacaNetworkAPI {
 		}
 	}()
 
-	@discardableResult
-	public func account(_ completion: @escaping (Result<Account, Error>) -> Void) -> Cancel {
-		let request = API.account.request(endpoint: endpoint, version: version)
+	private static var decoder: JSONDecoder = {
+		let decoder = JSONDecoder()
+		decoder.keyDecodingStrategy = .convertFromSnakeCase
+		decoder.dateDecodingStrategy = .formatted(.rfc3339)
+		return decoder
+	}()
+
+	func cancellableDataTask<T: Codable>(
+		for request: URLRequest,
+		_ completion: @escaping (Result<T, Error>) -> Void
+	) -> Cancel {
 		let task = session.dataTask(with: request) { (data, response, error) in
-			if let data = data {
+			if let error = error {
+				completion(.failure(error))
+			} else if let data = data {
 				do {
-					let account = try JSONDecoder().decode(Account.self, from: data)
+					let account = try AlpacaAPI.decoder.decode(T.self, from: data)
 					completion(.success(account))
 				} catch {
-					completion(.failure(error))
-				}
-			} else {
-				if let error = error {
+					if let alpacaError = try? AlpacaAPI.decoder.decode(AlpacaError.self, from: data) {
+						completion(.failure(alpacaError)); return
+					}
 					completion(.failure(error))
 				}
 			}
@@ -54,26 +63,20 @@ public final class AlpacaNetworkAPI {
 		}
 	}
 
-	private lazy var session: URLSession = {
+	lazy var session: URLSession = {
 		URLSession(configuration: configuration)
 	}()
 
-	enum API: String {
+	public enum Get: String {
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
 			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
-			request.httpMethod = method
+			request.httpMethod = "GET"
 			return request
 		}
 
 		func path(_ version: Alpaca.Version) -> String {
 			"\(version.rawValue)/\(rawValue)"
-		}
-
-		var method: String {
-			switch self {
-			default: return "GET"
-			}
 		}
 
 		case account

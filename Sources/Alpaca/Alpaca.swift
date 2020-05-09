@@ -13,10 +13,18 @@ public final class Alpaca {
 		version: Version = .v2,
 		key: Key
 	) {
-		api = AlpacaNetworkAPI(configuration: sessionConfiguration, mode: mode, version: version, key: key)
+		api = AlpacaAPI(configuration: sessionConfiguration, mode: mode, version: version, key: key)
 	}
 
-	public let api: AlpacaNetworkAPI
+	@discardableResult
+	public func get(_ path: AlpacaAPI.Get, _ completion: @escaping (Result<Account, Error>) -> Void) -> Cancel {
+		let request = path
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
+	private let api: AlpacaAPI
 
 	public enum Version: String {
 		case v2
