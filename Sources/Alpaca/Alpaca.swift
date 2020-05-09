@@ -16,7 +16,7 @@ public final class Alpaca {
 		api = AlpacaNetworkAPI(configuration: sessionConfiguration, mode: mode, version: version, key: key)
 	}
 
-	private let api: AlpacaNetworkAPI
+	public let api: AlpacaNetworkAPI
 
 	public enum Version: String {
 		case v2

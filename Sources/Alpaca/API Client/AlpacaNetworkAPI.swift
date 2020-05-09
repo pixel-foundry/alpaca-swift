@@ -3,7 +3,7 @@ import Foundation
 import FoundationNetworking
 #endif
 
-final class AlpacaNetworkAPI {
+public final class AlpacaNetworkAPI {
 
 	init(
 		configuration: URLSessionConfiguration,
@@ -30,6 +30,29 @@ final class AlpacaNetworkAPI {
 			return URL(string: "https://api.alpaca.markets")!
 		}
 	}()
+
+	@discardableResult
+	public func account(_ completion: @escaping (Result<Account, Error>) -> Void) -> Cancel {
+		let request = API.account.request(endpoint: endpoint, version: version)
+		let task = session.dataTask(with: request) { (data, response, error) in
+			if let data = data {
+				do {
+					let account = try JSONDecoder().decode(Account.self, from: data)
+					completion(.success(account))
+				} catch {
+					completion(.failure(error))
+				}
+			} else {
+				if let error = error {
+					completion(.failure(error))
+				}
+			}
+		}
+		task.resume()
+		return Cancel { [weak task] in
+			task?.cancel()
+		}
+	}
 
 	private lazy var session: URLSession = {
 		URLSession(configuration: configuration)
