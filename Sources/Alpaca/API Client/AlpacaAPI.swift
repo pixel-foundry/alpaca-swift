@@ -47,8 +47,8 @@ public final class AlpacaAPI {
 				completion(.failure(error))
 			} else if let data = data {
 				do {
-					let account = try AlpacaAPI.decoder.decode(T.self, from: data)
-					completion(.success(account))
+					let value = try AlpacaAPI.decoder.decode(T.self, from: data)
+					completion(.success(value))
 				} catch {
 					if let alpacaError = try? AlpacaAPI.decoder.decode(AlpacaError.self, from: data) {
 						completion(.failure(alpacaError)); return
@@ -67,11 +67,13 @@ public final class AlpacaAPI {
 		URLSession(configuration: configuration)
 	}()
 
-	public enum Get: String {
+	public enum Path: String {
+
+		case account
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
 			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
-			request.httpMethod = "GET"
+			request.httpMethod = method
 			return request
 		}
 
@@ -79,7 +81,11 @@ public final class AlpacaAPI {
 			"\(version.rawValue)/\(rawValue)"
 		}
 
-		case account
+		var method: String {
+			switch self {
+			default: return "GET"
+			}
+		}
 
 	}
 

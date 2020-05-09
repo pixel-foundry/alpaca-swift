@@ -2,6 +2,9 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+#if canImport(Combine)
+import Combine
+#endif
 
 /// Swift API client for Alpaca’s trade API.
 /// Contribute on [GitHub](https://github.com/pixel-foundry/alpaca-swift).
@@ -17,13 +20,25 @@ public final class Alpaca {
 	}
 
 	@discardableResult
-	public func get(_ path: AlpacaAPI.Get, _ completion: @escaping (Result<Account, Error>) -> Void) -> Cancel {
-		let request = path
+	public func account(_ completion: @escaping (Result<Account, Error>) -> Void) -> Cancel {
+		let request = AlpacaAPI.Path.account
 			.request(endpoint: api.endpoint, version: api.version)
 			.authenticate(with: api.key)
 		return api.cancellableDataTask(for: request, completion)
 	}
 
+	#if canImport(Combine)
+	@available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+	var accountPublisher: AnyPublisher<Account, Error> {
+		var cancel: Cancel?
+		return Future<Account, Error> { completion in
+			cancel = self.account(completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+	#endif
+	
 	private let api: AlpacaAPI
 
 	public enum Version: String {
