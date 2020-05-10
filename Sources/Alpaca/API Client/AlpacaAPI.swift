@@ -70,7 +70,8 @@ public final class AlpacaAPI {
 	public enum Path {
 
 		case account
-		case orders(Int?)
+		case orders(String?)
+		case ordersByClientID(String)
 		case placeOrder(OrderRequest)
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
@@ -96,6 +97,8 @@ public final class AlpacaAPI {
 			case .orders(let orderID):
 				if let id = orderID { return "orders/\(id)" }
 				return "orders"
+			case .ordersByClientID(let clientID):
+				return "orders:\(clientID)"
 			case .placeOrder: return "orders"
 			}
 		}

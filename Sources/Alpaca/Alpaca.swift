@@ -27,6 +27,30 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
+	@discardableResult
+	public func orders(_ completion: @escaping (Result<[Order], Error>) -> Void) -> Cancel {
+		let request = AlpacaAPI.Path.orders(nil)
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
+	@discardableResult
+	public func order(id: String, _ completion: @escaping (Result<Order, Error>) -> Void) -> Cancel {
+		let request = AlpacaAPI.Path.orders(id)
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
+	@discardableResult
+	public func order(clientID: String, _ completion: @escaping (Result<Order, Error>) -> Void) -> Cancel {
+		let request = AlpacaAPI.Path.ordersByClientID(clientID)
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
 	#if canImport(Combine)
 	@available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 	var account: AnyPublisher<Account, Error> {
