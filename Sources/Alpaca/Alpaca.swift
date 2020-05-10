@@ -47,7 +47,7 @@ public final class Alpaca {
 			.authenticate(with: api.key)
 		return api.cancellableDataTask(for: request, completion)
 	}
-	
+
 	private let api: AlpacaAPI
 
 	public enum Version: String {

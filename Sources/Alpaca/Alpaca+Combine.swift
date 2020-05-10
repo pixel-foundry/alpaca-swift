@@ -31,7 +31,6 @@ public extension Alpaca {
 		}).eraseToAnyPublisher()
 	}
 
-
 }
 
 #endif

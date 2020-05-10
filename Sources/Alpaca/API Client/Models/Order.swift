@@ -37,7 +37,7 @@ public struct Order: Codable, Hashable {
 	/// When querying non-simple `OrderClass` orders in a nested style,
 	/// an array of Order entities associated with this order. Otherwise, null.
 	public let legs: [Order]?
-	
+
 }
 
 @available(OSX 10.15, iOS 13, tvOS 13, watchOS 6, *)
