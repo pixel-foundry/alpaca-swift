@@ -32,7 +32,7 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
-	/// Retrieves a single order for the given `orderID`.
+	/// Retrieves a single order for the given order ID.
 	@discardableResult
 	public func order(id: String, _ completion: @escaping (Result<Order, Error>) -> Void) -> Cancel {
 		let request = AlpacaAPI.Path.orders(id)
@@ -41,7 +41,7 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
-	/// Retrieves a single order for the given `clientOrderID`.
+	/// Retrieves a single order for the given client order ID.
 	@discardableResult
 	public func order(clientID: String, _ completion: @escaping (Result<Order, Error>) -> Void) -> Cancel {
 		let request = AlpacaAPI.Path.ordersByClientID(clientID)
@@ -49,7 +49,6 @@ public final class Alpaca {
 			.authenticate(with: api.key)
 		return api.cancellableDataTask(for: request, completion)
 	}
-
 
 	/// Places a new order for the given account.
 	///
@@ -63,6 +62,17 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
+	/// Replaces a single order with updated parameters.
+	/// Each parameter overrides the corresponding attribute of the existing order.
+	///
+	/// A success return code from a replaced order does NOT guarantee the existing open order has been replaced.
+	/// If the existing open order is filled before the replacing (new) order reaches the execution venue,
+	/// the replacing (new) order is rejected, and these events are sent in the trade_updates stream channel.
+	/// While an order is being replaced, buying power is reduced by the larger of the two orders that have been placed
+	/// (the old order being replaced, and the newly placed order to replace it).
+	/// If you are replacing a buy entry order with a higher limit price than the original order,
+	/// the buying power is calculated based on the newly placed order.
+	/// If you are replacing it with a lower limit price, the buying power is calculated based on the old order.
 	@discardableResult
 	public func replace(
 		order id: String,

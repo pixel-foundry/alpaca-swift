@@ -40,7 +40,6 @@ public struct Order: Codable, Hashable {
 
 }
 
-
 @available(OSX 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension Order: Identifiable { }
 
