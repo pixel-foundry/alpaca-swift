@@ -38,6 +38,13 @@ public final class AlpacaAPI {
 		return decoder
 	}()
 
+	private static var encoder: JSONEncoder = {
+		let encoder = JSONEncoder()
+		encoder.keyEncodingStrategy = .convertToSnakeCase
+		encoder.dateEncodingStrategy = .formatted(.rfc3339)
+		return encoder
+	}()
+
 	func cancellableDataTask<T: Codable>(
 		for request: URLRequest,
 		_ completion: @escaping (Result<T, Error>) -> Void
@@ -73,11 +80,25 @@ public final class AlpacaAPI {
 		case orders(String?)
 		case ordersByClientID(String)
 		case placeOrder(OrderRequest)
+		case replaceOrder((id: String, order: OrderRequest))
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
 			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
 			request.httpMethod = method
+			encodeBody(to: &request)
 			return request
+		}
+
+		func encodeBody(to request: inout URLRequest) {
+			switch self {
+			case .placeOrder(let order):
+				request.httpBody = try? AlpacaAPI.encoder.encode(order)
+				request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+			case .replaceOrder((_, let replacementOrder)):
+				request.httpBody = try? AlpacaAPI.encoder.encode(replacementOrder)
+				request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+			default: return
+			}
 		}
 
 		func path(_ version: Alpaca.Version) -> String {
@@ -87,6 +108,7 @@ public final class AlpacaAPI {
 		var method: String {
 			switch self {
 			case .placeOrder: return "POST"
+			case .replaceOrder: return "PATCH"
 			default: return "GET"
 			}
 		}
@@ -100,6 +122,7 @@ public final class AlpacaAPI {
 			case .ordersByClientID(let clientID):
 				return "orders:\(clientID)"
 			case .placeOrder: return "orders"
+			case .replaceOrder((let id, _)): return "orders/\(id)"
 			}
 		}
 

@@ -48,6 +48,26 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
+	@discardableResult
+	public func place(order: OrderRequest, _ completion: @escaping (Result<Order, Error>) -> Void) -> Cancel {
+		let request = AlpacaAPI.Path.placeOrder(order)
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
+	@discardableResult
+	public func replace(
+		order id: String,
+		with order: OrderRequest,
+		_ completion: @escaping (Result<Order, Error>) -> Void
+	) -> Cancel {
+		let request = AlpacaAPI.Path.replaceOrder((id: id, order: order))
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
 	private let api: AlpacaAPI
 
 	public enum Version: String {

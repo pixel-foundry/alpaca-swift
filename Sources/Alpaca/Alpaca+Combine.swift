@@ -22,10 +22,37 @@ public extension Alpaca {
 		}).eraseToAnyPublisher()
 	}
 
-	func order(_ id: String) -> AnyPublisher<Order, Error> {
+	func order(id: String) -> AnyPublisher<Order, Error> {
 		var cancel: Cancel?
 		return Future<Order, Error> { completion in
 			cancel = self.order(id: id, completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+
+	func order(clientID: String) -> AnyPublisher<Order, Error> {
+		var cancel: Cancel?
+		return Future<Order, Error> { completion in
+			cancel = self.order(clientID: clientID, completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+
+	func place(order: OrderRequest) -> AnyPublisher<Order, Error> {
+		var cancel: Cancel?
+		return Future<Order, Error> { completion in
+			cancel = self.place(order: order, completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+
+	func replace(order id: String, with order: OrderRequest) -> AnyPublisher<Order, Error> {
+		var cancel: Cancel?
+		return Future<Order, Error> { completion in
+			cancel = self.replace(order: id, with: order, completion)
 		}.handleEvents(receiveCancel: {
 			cancel?.cancel()
 		}).eraseToAnyPublisher()
