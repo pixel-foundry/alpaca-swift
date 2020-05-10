@@ -32,6 +32,7 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
+	/// Retrieves a single order for the given `orderID`.
 	@discardableResult
 	public func order(id: String, _ completion: @escaping (Result<Order, Error>) -> Void) -> Cancel {
 		let request = AlpacaAPI.Path.orders(id)
@@ -40,6 +41,7 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
+	/// Retrieves a single order for the given `clientOrderID`.
 	@discardableResult
 	public func order(clientID: String, _ completion: @escaping (Result<Order, Error>) -> Void) -> Cancel {
 		let request = AlpacaAPI.Path.ordersByClientID(clientID)
@@ -48,17 +50,14 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
+
+	/// Places a new order for the given account.
+	///
+	/// An order request may be rejected if the account is not authorized for trading,
+	/// or if the tradable balance is insufficient to fill the order.
 	@discardableResult
 	public func place(order: OrderRequest, _ completion: @escaping (Result<Order, Error>) -> Void) -> Cancel {
 		let request = AlpacaAPI.Path.placeOrder(order)
-			.request(endpoint: api.endpoint, version: api.version)
-			.authenticate(with: api.key)
-		return api.cancellableDataTask(for: request, completion)
-	}
-
-	@discardableResult
-	public func cancelOrder(id: String, _ completion: @escaping (Result<String, Error>) -> Void) -> Cancel {
-		let request = AlpacaAPI.Path.cancelOrder(id)
 			.request(endpoint: api.endpoint, version: api.version)
 			.authenticate(with: api.key)
 		return api.cancellableDataTask(for: request, completion)
@@ -71,6 +70,30 @@ public final class Alpaca {
 		_ completion: @escaping (Result<Order, Error>) -> Void
 	) -> Cancel {
 		let request = AlpacaAPI.Path.replaceOrder((id: id, order: order))
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
+	/// Attempts to cancel an open order.
+	///
+	/// If the order is no longer cancelable (example: status=`orderFilled`),
+	/// the server will respond with status 422, and reject the request.
+	@discardableResult
+	public func cancelOrder(id: String, _ completion: @escaping (Result<String, Error>) -> Void) -> Cancel {
+		let request = AlpacaAPI.Path.cancelOrder(id)
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
+	/// Attempts to cancel all open orders.
+	///
+	/// A response will be provided for each order that is attempted to be cancelled.
+	/// If an order is no longer cancelable, the server will respond with status 500 and reject the request.
+	@discardableResult
+	public func cancelAllOrders(_ completion: @escaping (Result<[OrderCancellation], Error>) -> Void) -> Cancel {
+		let request = AlpacaAPI.Path.cancelAllOrders
 			.request(endpoint: api.endpoint, version: api.version)
 			.authenticate(with: api.key)
 		return api.cancellableDataTask(for: request, completion)

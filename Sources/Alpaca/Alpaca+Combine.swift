@@ -67,6 +67,15 @@ public extension Alpaca {
 		}).eraseToAnyPublisher()
 	}
 
+	var cancelAllOrders: AnyPublisher<[OrderCancellation], Error> {
+		 var cancel: Cancel?
+		 return Future<[OrderCancellation], Error> { completion in
+			 cancel = self.cancelAllOrders(completion)
+		 }.handleEvents(receiveCancel: {
+			 cancel?.cancel()
+		 }).eraseToAnyPublisher()
+	 }
+
 }
 
 #endif
