@@ -4,7 +4,7 @@ public struct Order: Codable, Hashable {
 
 	public let id: String
 	/// Client unique order ID.
-	public let clientOrderID: String
+	public let clientOrderId: String
 	public let createdAt: Date
 	public let updatedAt: Date?
 	public let submittedAt: Date?
@@ -17,7 +17,7 @@ public struct Order: Codable, Hashable {
 	public let replacedBy: String?
 	/// The order ID that this order replaces.
 	public let replaces: String?
-	public let assetID: String
+	public let assetId: String
 	/// Asset symbol.
 	public let symbol: String
 	public let assetClass: String
@@ -38,35 +38,6 @@ public struct Order: Codable, Hashable {
 	/// an array of Order entities associated with this order. Otherwise, null.
 	public let legs: [Order]?
 
-	public enum CodingKeys: String, CodingKey {
-		case id
-		case clientOrderID = "clientOrderId"
-		case createdAt
-		case updatedAt
-		case submittedAt
-		case filledAt
-		case expiredAt
-		case canceledAt
-		case failedAt
-		case replacedAt
-		case replacedBy
-		case replaces
-		case assetID = "assetId"
-		case symbol
-		case assetClass
-		case qty
-		case filledQty
-		case type
-		case side
-		case timeInForce
-		case limitPrice
-		case stopPrice
-		case filledAvgPrice
-		case status
-		case extendedHours
-		case legs
-	}
-
 }
 
 
@@ -76,17 +47,17 @@ extension Order: Identifiable { }
 /// See [Alpaca’s docs](https://alpaca.markets/docs/trading-on-alpaca/orders/#order-lifecycle) for more details.
 public enum OrderStatus: String, Codable, Hashable {
 	case new
-	case partiallyFilled
+	case partiallyFilled = "partially_filled"
 	case filled
-	case doneForDay
+	case doneForDay = "done_for_day"
 	case canceled
 	case expired
 	case replaced
-	case pendingCancel
-	case pendingReplace
+	case pendingCancel = "pending_cancel"
+	case pendingReplace = "pending_replace"
 	case accepted
-	case pendingNew
-	case acceptedForBidding
+	case pendingNew = "pending_new"
+	case acceptedForBidding = "accepted_for_bidding"
 	case stopped
 	case rejected
 	case suspended
