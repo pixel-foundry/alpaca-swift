@@ -2,9 +2,9 @@
 
 https://alpaca.markets/docs/
 
-Currently a work in progress.
-
 `Alpaca` is a type-safe Swift client for the Alpaca trade API.
+
+Currently a work in progress. The currently implemented methods and types are documented [on the Wiki](https://github.com/pixel-foundry/alpaca-swift/wiki).
 
 ## Usage
 
