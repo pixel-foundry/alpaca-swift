@@ -4,6 +4,9 @@ import Combine
 @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public extension Alpaca {
 
+	/// The account API serves important information related to an account, including account status,
+	/// funds available for trade, funds available for withdrawal,
+	/// and various flags relevant to an account’s ability to trade.
 	var account: AnyPublisher<Account, Error> {
 		var cancel: Cancel?
 		return Future<Account, Error> { completion in
@@ -13,10 +16,11 @@ public extension Alpaca {
 		}).eraseToAnyPublisher()
 	}
 
-	var orders: AnyPublisher<[Order], Error> {
+	/// Retrieves a list of orders for the account, filtered by the supplied query parameters.
+	func orders(queryParameters: Order.QueryParameters? = nil) -> AnyPublisher<[Order], Error> {
 		var cancel: Cancel?
 		return Future<[Order], Error> { completion in
-			cancel = self.orders(completion)
+			cancel = self.orders(queryParameters: queryParameters, completion)
 		}.handleEvents(receiveCancel: {
 			cancel?.cancel()
 		}).eraseToAnyPublisher()

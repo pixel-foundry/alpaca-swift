@@ -16,6 +16,9 @@ public final class Alpaca {
 		api = AlpacaAPI(configuration: sessionConfiguration, mode: mode, version: version, key: key)
 	}
 
+	/// The account API serves important information related to an account, including account status,
+	/// funds available for trade, funds available for withdrawal,
+	/// and various flags relevant to an account’s ability to trade.
 	@discardableResult
 	public func account(_ completion: @escaping (Result<Account, Error>) -> Void) -> Cancel {
 		let request = AlpacaAPI.Path.account
@@ -24,10 +27,15 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
+	/// Retrieves a list of orders for the account, filtered by the supplied query parameters.
 	@discardableResult
-	public func orders(_ completion: @escaping (Result<[Order], Error>) -> Void) -> Cancel {
+	public func orders(
+		queryParameters: Order.QueryParameters? = nil,
+		_ completion: @escaping (Result<[Order], Error>) -> Void
+	) -> Cancel {
 		let request = AlpacaAPI.Path.orders(nil)
 			.request(endpoint: api.endpoint, version: api.version)
+			.addQueryParameters(queryParameters)
 			.authenticate(with: api.key)
 		return api.cancellableDataTask(for: request, completion)
 	}

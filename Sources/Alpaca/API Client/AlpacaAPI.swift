@@ -31,14 +31,14 @@ public final class AlpacaAPI {
 		}
 	}()
 
-	private static var decoder: JSONDecoder = {
+	static var decoder: JSONDecoder = {
 		let decoder = JSONDecoder()
 		decoder.keyDecodingStrategy = .convertFromSnakeCase
 		decoder.dateDecodingStrategy = .formatted(.rfc3339)
 		return decoder
 	}()
 
-	private static var encoder: JSONEncoder = {
+	static var encoder: JSONEncoder = {
 		let encoder = JSONEncoder()
 		encoder.keyEncodingStrategy = .convertToSnakeCase
 		encoder.dateEncodingStrategy = .formatted(.rfc3339)
@@ -130,7 +130,7 @@ public final class AlpacaAPI {
 				return "orders:\(clientID)"
 			case .placeOrder, .cancelAllOrders: return "orders"
 			case .replaceOrder((let orderID, _)),
-					 .cancelOrder(let orderID):
+				 .cancelOrder(let orderID):
 				return "orders/\(orderID)"
 			}
 		}
