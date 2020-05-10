@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Order: Hashable {
+public struct Order: Codable, Hashable {
 
 	public let id: String
 	/// Client unique order ID.
@@ -22,15 +22,15 @@ public struct Order: Hashable {
 	public let symbol: String
 	public let assetClass: String
 	/// Ordered quantity.
-	public let qty: Int
+	public let qty: Quantity
 	/// Filled quantity.
-	public let filledQty: Int
+	public let filledQty: Quantity
 	public let type: OrderType
 	public let side: OrderSide
 	public let timeInForce: TimeInForce
-	public let limitPrice: Decimal?
-	public let stopPrice: Decimal?
-	public let filledAvgPrice: Decimal?
+	public let limitPrice: Money?
+	public let stopPrice: Money?
+	public let filledAvgPrice: Money?
 	public let status: OrderStatus
 	/// If true, eligible for execution outside regular trading hours.
 	public let extendedHours: Bool
@@ -65,60 +65,6 @@ public struct Order: Hashable {
 		case status
 		case extendedHours
 		case legs
-	}
-
-}
-
-extension Order: Encodable { }
-
-extension Order: Decodable {
-
-	public init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: CodingKeys.self)
-		id = try values.decode(String.self, forKey: .id)
-		clientOrderID = try values.decode(String.self, forKey: .clientOrderID)
-		createdAt = try values.decode(Date.self, forKey: .createdAt)
-		updatedAt = try values.decode(Date?.self, forKey: .updatedAt)
-		submittedAt = try values.decode(Date?.self, forKey: .submittedAt)
-		filledAt = try values.decode(Date?.self, forKey: .filledAt)
-		expiredAt = try values.decode(Date?.self, forKey: .expiredAt)
-		canceledAt = try values.decode(Date?.self, forKey: .canceledAt)
-		failedAt = try values.decode(Date?.self, forKey: .failedAt)
-		replacedAt = try values.decode(Date?.self, forKey: .replacedAt)
-		replacedBy = try values.decode(String?.self, forKey: .replacedBy)
-		replaces = try values.decode(String?.self, forKey: .replaces)
-		assetID = try values.decode(String.self, forKey: .assetID)
-		symbol = try values.decode(String.self, forKey: .symbol)
-		assetClass = try values.decode(String.self, forKey: .assetClass)
-		let quantityString = try values.decode(String.self, forKey: .qty)
-		guard let quantity = Int(quantityString) else { throw OrderDecodeError.invalidQuantity }
-		qty = quantity
-		let filledQuantityString = try values.decode(String.self, forKey: .filledQty)
-		guard let filledQuantity = Int(filledQuantityString) else { throw OrderDecodeError.invalidQuantity }
-		filledQty = filledQuantity
-		type = try values.decode(OrderType.self, forKey: .type)
-		side = try values.decode(OrderSide.self, forKey: .side)
-		timeInForce = try values.decode(TimeInForce.self, forKey: .timeInForce)
-
-		let limitString = try values.decode(String?.self, forKey: .limitPrice)
-		let limitDecimal = Decimal(string: limitString ?? "")
-		limitPrice = limitDecimal
-
-		let stopString = try values.decode(String?.self, forKey: .stopPrice)
-		let stopDecimal = Decimal(string: stopString ?? "")
-		stopPrice = stopDecimal
-
-		let filledString = try values.decode(String?.self, forKey: .filledAvgPrice)
-		let filledDecimal = Decimal(string: filledString ?? "")
-		filledAvgPrice = filledDecimal
-
-		status = try values.decode(OrderStatus.self, forKey: .status)
-		extendedHours = try values.decode(Bool.self, forKey: .extendedHours)
-		legs = try values.decode([Order]?.self, forKey: .legs)
-	}
-
-	enum OrderDecodeError: Error {
-		case invalidQuantity
 	}
 
 }

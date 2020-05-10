@@ -4,12 +4,12 @@ public struct OrderRequest: Codable, Hashable {
 
 	public init(
 		symbol: String,
-		qty: Int,
+		qty: Quantity,
 		side: OrderSide,
 		type: OrderType,
 		timeInForce: TimeInForce,
-		limitPrice: Decimal? = nil,
-		stopPrice: Decimal? = nil,
+		limitPrice: Money? = nil,
+		stopPrice: Money? = nil,
 		extendedHours: Bool = false,
 		clientOrderID: String? = nil,
 		orderClass: OrderClass? = nil,
@@ -34,7 +34,7 @@ public struct OrderRequest: Codable, Hashable {
 	public var symbol: String
 
 	/// Number of shares to trade.
-	public var qty: Int
+	public var qty: Quantity
 
 	public var side: OrderSide
 
@@ -43,10 +43,10 @@ public struct OrderRequest: Codable, Hashable {
 	public var timeInForce: TimeInForce
 
 	/// Required if type is `limit` or `stopLimit`
-	public var limitPrice: Decimal?
+	public var limitPrice: Money?
 
 	/// Required if type is `stop` or `stopLimit`
-	public var stopPrice: Decimal?
+	public var stopPrice: Money?
 
 	/// If true, order will be eligible to execute in premarket/afterhours.
 	///
@@ -68,9 +68,9 @@ public struct OrderRequest: Codable, Hashable {
 public struct TakeProfit: Codable, Hashable {
 
 	/// Required for bracket orders.
-	public var limitPrice: Decimal
+	public var limitPrice: Money
 
-	public init(limitPrice: Decimal) {
+	public init(limitPrice: Money) {
 		self.limitPrice = limitPrice
 	}
 
@@ -80,11 +80,11 @@ public struct TakeProfit: Codable, Hashable {
 public struct StopLoss: Codable, Hashable {
 
 	/// Required for bracket orders.
-	public var stopPrice: Decimal
+	public var stopPrice: Money
 	/// The stop-loss order becomes a stop-limit order if specified.
-	public var limitPrice: Decimal?
+	public var limitPrice: Money?
 
-	public init(stopPrice: Decimal, limitPrice: Decimal? = nil) {
+	public init(stopPrice: Money, limitPrice: Money? = nil) {
 		self.stopPrice = stopPrice
 		self.limitPrice = limitPrice
 	}
