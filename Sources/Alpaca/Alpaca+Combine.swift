@@ -58,6 +58,15 @@ public extension Alpaca {
 		}).eraseToAnyPublisher()
 	}
 
+	func cancelOrder(id: String) -> AnyPublisher<String, Error> {
+		var cancel: Cancel?
+		return Future<String, Error> { completion in
+			cancel = self.cancelOrder(id: id, completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+
 }
 
 #endif

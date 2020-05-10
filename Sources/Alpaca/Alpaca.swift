@@ -57,6 +57,14 @@ public final class Alpaca {
 	}
 
 	@discardableResult
+	public func cancelOrder(id: String, _ completion: @escaping (Result<String, Error>) -> Void) -> Cancel {
+		let request = AlpacaAPI.Path.cancelOrder(id)
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
+	@discardableResult
 	public func replace(
 		order id: String,
 		with order: OrderRequest,

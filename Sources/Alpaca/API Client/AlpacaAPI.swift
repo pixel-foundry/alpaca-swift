@@ -60,7 +60,11 @@ public final class AlpacaAPI {
 					if let alpacaError = try? AlpacaAPI.decoder.decode(AlpacaError.self, from: data) {
 						completion(.failure(alpacaError)); return
 					}
-					completion(.failure(error))
+					if "" is T, let string = String(data: data, encoding: .utf8) {
+						completion(.success(string as! T))
+					} else {
+						completion(.failure(error))
+					}
 				}
 			}
 		}
@@ -81,6 +85,8 @@ public final class AlpacaAPI {
 		case ordersByClientID(String)
 		case placeOrder(OrderRequest)
 		case replaceOrder((id: String, order: OrderRequest))
+		case cancelOrder(String)
+		case cancelAllOrders
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
 			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
@@ -109,6 +115,7 @@ public final class AlpacaAPI {
 			switch self {
 			case .placeOrder: return "POST"
 			case .replaceOrder: return "PATCH"
+			case .cancelOrder, .cancelAllOrders: return "DELETE"
 			default: return "GET"
 			}
 		}
@@ -121,8 +128,10 @@ public final class AlpacaAPI {
 				return "orders"
 			case .ordersByClientID(let clientID):
 				return "orders:\(clientID)"
-			case .placeOrder: return "orders"
-			case .replaceOrder((let id, _)): return "orders/\(id)"
+			case .placeOrder, .cancelAllOrders: return "orders"
+			case .replaceOrder((let orderID, _)),
+					 .cancelOrder(let orderID):
+				return "orders/\(orderID)"
 			}
 		}
 

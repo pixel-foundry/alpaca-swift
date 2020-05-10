@@ -14,14 +14,6 @@ public struct Quantity: Hashable {
 
 }
 
-extension Quantity: ExpressibleByStringLiteral {
-
-	public init(stringLiteral value: String) {
-		self.init(Int(value) ?? 0)
-	}
-
-}
-
 extension Quantity: ExpressibleByIntegerLiteral {
 
 	public init(integerLiteral value: Int) {
@@ -34,8 +26,8 @@ extension Quantity: Codable {
 
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.singleValueContainer()
-		if let string = try? container.decode(String.self) {
-			self.init(stringLiteral: string)
+		if let string = try? container.decode(String.self), let integer = Int(string) {
+			self.init(integer)
 		} else {
 			let integer = try container.decode(Int.self)
 			self.init(integer)
