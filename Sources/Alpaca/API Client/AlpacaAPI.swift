@@ -79,14 +79,17 @@ public final class AlpacaAPI {
 	}()
 
 	public enum Path {
-
+		// Account
 		case account
+		// Orders
 		case orders(String?)
 		case ordersByClientID(String)
 		case placeOrder(OrderRequest)
 		case replaceOrder((id: String, order: OrderRequest))
 		case cancelOrder(String)
 		case cancelAllOrders
+		// Positions
+		case positions
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
 			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
@@ -132,6 +135,7 @@ public final class AlpacaAPI {
 			case .replaceOrder((let orderID, _)),
 				 .cancelOrder(let orderID):
 				return "orders/\(orderID)"
+			case .positions: return "positions"
 			}
 		}
 
