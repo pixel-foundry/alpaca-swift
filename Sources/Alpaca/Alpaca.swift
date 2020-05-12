@@ -165,7 +165,6 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
-
 	private let api: AlpacaAPI
 
 	public enum Version: String {

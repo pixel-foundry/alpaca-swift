@@ -120,7 +120,7 @@ public final class AlpacaAPI {
 			case .placeOrder: return "POST"
 			case .replaceOrder: return "PATCH"
 			case .cancelOrder, .cancelAllOrders,
-					 .closePosition, .closePositions:
+				 .closePosition, .closePositions:
 				return "DELETE"
 			default: return "GET"
 			}
