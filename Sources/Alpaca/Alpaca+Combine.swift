@@ -105,6 +105,48 @@ public extension Alpaca {
 		}).eraseToAnyPublisher()
 	}
 
+	/// Retrieves a list of the account’s open positions.
+	var positions: AnyPublisher<[Position], Error> {
+		var cancel: Cancel?
+		return Future<[Position], Error> { completion in
+			cancel = self.positions(completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+
+	/// Retrieves the account’s open position for the given `symbol`.
+	func position(symbol: String) -> AnyPublisher<Position, Error> {
+		var cancel: Cancel?
+		return Future<Position, Error> { completion in
+			cancel = self.position(symbol: symbol, completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+
+	/// Closes (liquidates) all of the account’s open long and short positions.
+	/// A response will be provided for each order that is attempted to be cancelled.
+	/// If an order is no longer cancelable, the server will respond with status 500 and reject the request.
+	var closeAllPositions: AnyPublisher<[PositionLiquidation], Error> {
+		var cancel: Cancel?
+		return Future<[PositionLiquidation], Error> { completion in
+			cancel = self.closeAllPositions(completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+
+	/// Closes (liquidates) the account’s open position for the given `symbol`. Works for both long and short positions.
+	func closePosition(symbol: String) -> AnyPublisher<Position, Error> {
+		var cancel: Cancel?
+		return Future<Position, Error> { completion in
+			cancel = self.closePosition(symbol: symbol, completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+
 }
 
 #endif

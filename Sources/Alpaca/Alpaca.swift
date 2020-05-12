@@ -117,6 +117,55 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
+	/// Retrieves a list of the account’s open positions.
+	@discardableResult
+	public func positions(
+		_ completion: @escaping (Result<[Position], Error>) -> Void
+	) -> Cancel {
+		let request = AlpacaAPI.Path.positions
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
+	/// Retrieves the account’s open position for the given `symbol`.
+	@discardableResult
+	public func position(
+		symbol: String,
+		_ completion: @escaping (Result<Position, Error>) -> Void
+	) -> Cancel {
+		let request = AlpacaAPI.Path.position(symbol)
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
+	/// Closes (liquidates) all of the account’s open long and short positions.
+	/// A response will be provided for each order that is attempted to be cancelled.
+	/// If an order is no longer cancelable, the server will respond with status 500 and reject the request.
+	@discardableResult
+	public func closeAllPositions(
+		_ completion: @escaping (Result<[PositionLiquidation], Error>) -> Void
+	) -> Cancel {
+		let request = AlpacaAPI.Path.closePositions
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
+	/// Closes (liquidates) the account’s open position for the given `symbol`. Works for both long and short positions.
+	@discardableResult
+	public func closePosition(
+		symbol: String,
+		_ completion: @escaping (Result<Position, Error>) -> Void
+	) -> Cancel {
+		let request = AlpacaAPI.Path.closePosition(symbol)
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
+
 	private let api: AlpacaAPI
 
 	public enum Version: String {

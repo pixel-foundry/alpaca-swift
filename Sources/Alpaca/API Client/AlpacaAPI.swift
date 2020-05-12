@@ -89,7 +89,8 @@ public final class AlpacaAPI {
 		case cancelOrder(String)
 		case cancelAllOrders
 		// Positions
-		case positions
+		case positions, closePositions
+		case position(String), closePosition(String)
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
 			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
@@ -118,7 +119,9 @@ public final class AlpacaAPI {
 			switch self {
 			case .placeOrder: return "POST"
 			case .replaceOrder: return "PATCH"
-			case .cancelOrder, .cancelAllOrders: return "DELETE"
+			case .cancelOrder, .cancelAllOrders,
+					 .closePosition, .closePositions:
+				return "DELETE"
 			default: return "GET"
 			}
 		}
@@ -135,7 +138,9 @@ public final class AlpacaAPI {
 			case .replaceOrder((let orderID, _)),
 				 .cancelOrder(let orderID):
 				return "orders/\(orderID)"
-			case .positions: return "positions"
+			case .positions, .closePositions: return "positions"
+			case .position(let symbol), .closePosition(let symbol):
+				return "positions/\(symbol)"
 			}
 		}
 
