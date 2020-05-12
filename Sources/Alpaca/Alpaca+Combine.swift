@@ -138,9 +138,9 @@ public extension Alpaca {
 	}
 
 	/// Closes (liquidates) the account’s open position for the given `symbol`. Works for both long and short positions.
-	func closePosition(symbol: String) -> AnyPublisher<Position, Error> {
+	func closePosition(symbol: String) -> AnyPublisher<Order, Error> {
 		var cancel: Cancel?
-		return Future<Position, Error> { completion in
+		return Future<Order, Error> { completion in
 			cancel = self.closePosition(symbol: symbol, completion)
 		}.handleEvents(receiveCancel: {
 			cancel?.cancel()

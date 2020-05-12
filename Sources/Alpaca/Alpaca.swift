@@ -157,7 +157,7 @@ public final class Alpaca {
 	@discardableResult
 	public func closePosition(
 		symbol: String,
-		_ completion: @escaping (Result<Position, Error>) -> Void
+		_ completion: @escaping (Result<Order, Error>) -> Void
 	) -> Cancel {
 		let request = AlpacaAPI.Path.closePosition(symbol)
 			.request(endpoint: api.endpoint, version: api.version)
