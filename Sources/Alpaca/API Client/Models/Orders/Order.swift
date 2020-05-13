@@ -20,7 +20,7 @@ public struct Order: Codable, Hashable {
 	public let assetId: String
 	/// Asset symbol.
 	public let symbol: String
-	public let assetClass: String
+	public let assetClass: AssetClass
 	/// Ordered quantity.
 	public let qty: Quantity
 	/// Filled quantity.

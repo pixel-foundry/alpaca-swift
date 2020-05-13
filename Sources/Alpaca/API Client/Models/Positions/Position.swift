@@ -9,7 +9,7 @@ public struct Position: Codable, Hashable {
 	/// Exchange name of the asset.
 	public let exchange: String
 	/// Asset class name.
-	public let assetClass: String
+	public let assetClass: AssetClass
 	/// Average entry price of the position.
 	public let avgEntryPrice: Money
 	/// The number of shares.

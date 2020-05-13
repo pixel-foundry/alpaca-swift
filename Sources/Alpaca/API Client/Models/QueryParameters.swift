@@ -64,6 +64,27 @@ public extension Order {
 
 }
 
+public extension Asset {
+
+	struct QueryParameters: QueryParameter, Hashable {
+
+		/// e.g. `active`. By default, all statuses are included.
+		public let status: AssetStatus?
+		/// Defaults to `usEquity`.
+		public let assetClass: AssetClass?
+
+		public init(
+			status: AssetStatus? = nil,
+			assetClass: AssetClass? = nil
+		) {
+			self.status = status
+			self.assetClass = assetClass
+		}
+
+	}
+
+}
+
 extension URLRequest {
 
 	func addQueryParameters(_ parameters: QueryParameter?, using encoder: JSONEncoder = AlpacaAPI.encoder) -> URLRequest {

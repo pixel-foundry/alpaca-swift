@@ -16,6 +16,19 @@ public final class Alpaca {
 		api = AlpacaAPI(configuration: sessionConfiguration, mode: mode, version: version, key: key)
 	}
 
+	private let api: AlpacaAPI
+
+	public enum Version: String {
+		case v2
+	}
+
+	public enum Mode {
+		/// Live trade with real money.
+		case live
+		/// Paper trade in a real-time simulation environment where you can test your code.
+		case paper
+	}
+
 	/// The account API serves important information related to an account, including account status,
 	/// funds available for trade, funds available for withdrawal,
 	/// and various flags relevant to an account’s ability to trade.
@@ -165,17 +178,33 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
-	private let api: AlpacaAPI
-
-	public enum Version: String {
-		case v2
+	/// The assets API serves as the master list of assets available for trade and data consumption from Alpaca.
+	///
+	/// Assets are sorted by asset class, exchange and symbol.
+	/// Some assets are only available for data consumption via Polygon, and are not tradable with Alpaca.
+	/// These assets will be marked with the flag `tradable`=`false`.
+	@discardableResult
+	public func assets(
+		queryParameters: Asset.QueryParameters? = nil,
+		_ completion: @escaping (Result<[Asset], Error>) -> Void
+	) -> Cancel {
+		let request = AlpacaAPI.Path.assets
+			.request(endpoint: api.endpoint, version: api.version)
+			.addQueryParameters(queryParameters)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
 	}
 
-	public enum Mode {
-		/// Live trade with real money.
-		case live
-		/// Paper trade in a real-time simulation environment where you can test your code.
-		case paper
+	/// Get an asset for the given symbol (or asset ID).
+	@discardableResult
+	public func asset(
+		symbol: String,
+		_ completion: @escaping (Result<Asset, Error>) -> Void
+	) -> Cancel {
+		let request = AlpacaAPI.Path.asset(symbol: symbol)
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
 	}
 
 }
