@@ -61,6 +61,7 @@ public final class AlpacaAPI {
 						completion(.failure(alpacaError)); return
 					}
 					if "" is T, let string = String(data: data, encoding: .utf8) {
+						// swiftlint:disable force_cast
 						completion(.success(string as! T))
 					} else {
 						completion(.failure(error))
@@ -122,8 +123,7 @@ public final class AlpacaAPI {
 			switch self {
 			case .placeOrder: return "POST"
 			case .replaceOrder: return "PATCH"
-			case .cancelOrder, .cancelAllOrders,
-				 .closePosition, .closePositions:
+			case .cancelOrder, .cancelAllOrders, .closePosition, .closePositions:
 				return "DELETE"
 			default: return "GET"
 			}
@@ -138,8 +138,7 @@ public final class AlpacaAPI {
 			case .ordersByClientID(let clientID):
 				return "orders:\(clientID)"
 			case .placeOrder, .cancelAllOrders: return "orders"
-			case .replaceOrder((let orderID, _)),
-				 .cancelOrder(let orderID):
+			case .replaceOrder((let orderID, _)), .cancelOrder(let orderID):
 				return "orders/\(orderID)"
 			case .positions, .closePositions: return "positions"
 			case .position(let symbol), .closePosition(let symbol):
