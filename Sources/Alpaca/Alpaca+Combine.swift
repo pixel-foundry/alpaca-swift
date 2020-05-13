@@ -147,6 +147,34 @@ public extension Alpaca {
 		}).eraseToAnyPublisher()
 	}
 
+	/// The assets API serves as the master list of assets available for trade and data consumption from Alpaca.
+	///
+	/// Assets are sorted by asset class, exchange and symbol.
+	/// Some assets are only available for data consumption via Polygon, and are not tradable with Alpaca.
+	/// These assets will be marked with the flag `tradable`=`false`.
+	func assets(
+		queryParameters: Asset.QueryParameters? = nil
+	) -> AnyPublisher<[Asset], Error> {
+		var cancel: Cancel?
+		return Future<[Asset], Error> { completion in
+			cancel = self.assets(queryParameters: queryParameters, completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+
+	/// Get an asset for the given symbol (or asset ID).
+	func asset(
+		symbol: String
+	) -> AnyPublisher<Asset, Error> {
+		var cancel: Cancel?
+		return Future<Asset, Error> { completion in
+			cancel = self.asset(symbol: symbol, completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+
 }
 
 #endif

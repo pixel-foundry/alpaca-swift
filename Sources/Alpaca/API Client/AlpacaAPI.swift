@@ -91,6 +91,9 @@ public final class AlpacaAPI {
 		// Positions
 		case positions, closePositions
 		case position(String), closePosition(String)
+		// Assets
+		case assets
+		case asset(symbol: String)
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
 			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
@@ -141,6 +144,9 @@ public final class AlpacaAPI {
 			case .positions, .closePositions: return "positions"
 			case .position(let symbol), .closePosition(let symbol):
 				return "positions/\(symbol)"
+			case .assets: return "assets"
+			case .asset(symbol: let symbol):
+				return "assets/\(symbol)"
 			}
 		}
 

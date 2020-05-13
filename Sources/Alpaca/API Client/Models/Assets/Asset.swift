@@ -27,5 +27,5 @@ public enum AssetStatus: String, Codable, Hashable {
 }
 
 public enum AssetClass: String, Codable, Hashable {
-	case usEquity
+	case usEquity = "us_equity"
 }

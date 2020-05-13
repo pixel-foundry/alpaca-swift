@@ -7,4 +7,5 @@ public enum Exchange: String, Codable, Hashable {
 	case nyse = "NYSE"
 	case nasdaq = "NASDAQ"
 	case nysearca = "NYSEARCA"
+	case otc = "OTC"
 }
