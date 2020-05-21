@@ -95,6 +95,8 @@ public final class AlpacaAPI {
 		// Assets
 		case assets
 		case asset(symbol: String)
+		// Calendar
+		case calendar
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
 			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
@@ -146,6 +148,7 @@ public final class AlpacaAPI {
 			case .assets: return "assets"
 			case .asset(symbol: let symbol):
 				return "assets/\(symbol)"
+			case .calendar: return "calendar"
 			}
 		}
 
