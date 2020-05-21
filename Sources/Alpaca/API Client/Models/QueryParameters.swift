@@ -92,7 +92,7 @@ extension URLRequest {
 		guard let url = self.url, var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
 			return self
 		}
-		let queryItems = parameters.queryParameters(encoder: encoder)?.compactMap { (key, value) -> URLQueryItem? in
+		let queryItems = parameters.queryParameters(encoder: encoder)?.compactMap { key, value -> URLQueryItem? in
 			return URLQueryItem(name: key, value: value)
 		} ?? []
 		if urlComponents.queryItems == nil { urlComponents.queryItems = [] }

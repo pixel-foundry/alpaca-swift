@@ -49,7 +49,7 @@ public final class AlpacaAPI {
 		for request: URLRequest,
 		_ completion: @escaping (Result<T, Error>) -> Void
 	) -> Cancel {
-		let task = session.dataTask(with: request) { (data, _, error) in
+		let task = session.dataTask(with: request) { data, _, error in
 			if let error = error {
 				completion(.failure(error))
 			} else if let data = data {
