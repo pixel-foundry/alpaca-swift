@@ -49,7 +49,7 @@ public final class AlpacaAPI {
 		for request: URLRequest,
 		_ completion: @escaping (Result<T, Error>) -> Void
 	) -> Cancel {
-		let task = session.dataTask(with: request) { (data, _, error) in
+		let task = session.dataTask(with: request) { data, _, error in
 			if let error = error {
 				completion(.failure(error))
 			} else if let data = data {
@@ -95,6 +95,8 @@ public final class AlpacaAPI {
 		// Assets
 		case assets
 		case asset(symbol: String)
+		// Calendar
+		case calendar
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
 			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
@@ -146,6 +148,7 @@ public final class AlpacaAPI {
 			case .assets: return "assets"
 			case .asset(symbol: let symbol):
 				return "assets/\(symbol)"
+			case .calendar: return "calendar"
 			}
 		}
 

@@ -85,6 +85,27 @@ public extension Asset {
 
 }
 
+public extension Calendar {
+
+	struct QueryParameters: QueryParameter, Hashable {
+
+		/// The first date to retrieve data for (inclusive).
+		public let start: Date?
+		/// The last date to retrieve data for (inclusive).
+		public let end: Date?
+
+		public init(
+			start: Date? = nil,
+			end: Date? = nil
+		) {
+			self.start = start
+			self.end = end
+		}
+
+	}
+
+}
+
 extension URLRequest {
 
 	func addQueryParameters(_ parameters: QueryParameter?, using encoder: JSONEncoder = AlpacaAPI.encoder) -> URLRequest {
@@ -92,7 +113,7 @@ extension URLRequest {
 		guard let url = self.url, var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
 			return self
 		}
-		let queryItems = parameters.queryParameters(encoder: encoder)?.compactMap { (key, value) -> URLQueryItem? in
+		let queryItems = parameters.queryParameters(encoder: encoder)?.compactMap { key, value -> URLQueryItem? in
 			return URLQueryItem(name: key, value: value)
 		} ?? []
 		if urlComponents.queryItems == nil { urlComponents.queryItems = [] }

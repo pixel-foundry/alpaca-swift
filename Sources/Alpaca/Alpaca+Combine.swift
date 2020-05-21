@@ -175,6 +175,19 @@ public extension Alpaca {
 		}).eraseToAnyPublisher()
 	}
 
+	/// The calendar API serves the full list of market days from 1970 to 2029.
+	/// It can also be queried by specifying a start and/or end time to narrow down the results.
+	func calendar(
+		queryParameters: Calendar.QueryParameters? = nil
+	) -> AnyPublisher<[Calendar], Error> {
+		var cancel: Cancel?
+		return Future<[Calendar], Error> { completion in
+			cancel = self.calendar(queryParameters: queryParameters, completion)
+		}.handleEvents(receiveCancel: {
+			cancel?.cancel()
+		}).eraseToAnyPublisher()
+	}
+
 }
 
 #endif

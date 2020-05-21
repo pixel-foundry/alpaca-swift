@@ -207,4 +207,18 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
+	/// The calendar API serves the full list of market days from 1970 to 2029.
+	/// It can also be queried by specifying a start and/or end time to narrow down the results.
+	@discardableResult
+	public func calendar(
+		queryParameters: Calendar.QueryParameters? = nil,
+		_ completion: @escaping (Result<[Calendar], Error>) -> Void
+	) -> Cancel {
+		let request = AlpacaAPI.Path.calendar
+			.request(endpoint: api.endpoint, version: api.version)
+			.addQueryParameters(queryParameters)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
 }
