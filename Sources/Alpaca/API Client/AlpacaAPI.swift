@@ -34,14 +34,14 @@ public final class AlpacaAPI {
 	static var decoder: JSONDecoder = {
 		let decoder = JSONDecoder()
 		decoder.keyDecodingStrategy = .convertFromSnakeCase
-		decoder.dateDecodingStrategy = .formatted(.rfc3339)
+		decoder.dateDecodingStrategy = .alpaca
 		return decoder
 	}()
 
 	static var encoder: JSONEncoder = {
 		let encoder = JSONEncoder()
 		encoder.keyEncodingStrategy = .convertToSnakeCase
-		encoder.dateEncodingStrategy = .formatted(.rfc3339)
+		encoder.dateEncodingStrategy = .formatted(RFC3339DateFormatter())
 		return encoder
 	}()
 
@@ -54,6 +54,7 @@ public final class AlpacaAPI {
 				completion(.failure(error))
 			} else if let data = data {
 				do {
+					print(String(data: data, encoding: .utf8))
 					let value = try AlpacaAPI.decoder.decode(T.self, from: data)
 					completion(.success(value))
 				} catch {
@@ -97,6 +98,8 @@ public final class AlpacaAPI {
 		case asset(symbol: String)
 		// Calendar
 		case calendar
+		// Clock
+		case clock
 
 		func request(endpoint: URL, version: Alpaca.Version) -> URLRequest {
 			var request = URLRequest(url: endpoint.appendingPathComponent(path(version)))
@@ -149,6 +152,7 @@ public final class AlpacaAPI {
 			case .asset(symbol: let symbol):
 				return "assets/\(symbol)"
 			case .calendar: return "calendar"
+			case .clock: return "clock"
 			}
 		}
 
