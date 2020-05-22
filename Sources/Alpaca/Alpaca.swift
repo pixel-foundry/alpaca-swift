@@ -221,4 +221,16 @@ public final class Alpaca {
 		return api.cancellableDataTask(for: request, completion)
 	}
 
+	/// The clock API serves the current market timestamp, whether or not the market is currently open,
+	/// as well as the times of the next market open and close.
+	@discardableResult
+	public func clock(
+		_ completion: @escaping (Result<Clock, Error>) -> Void
+	) -> Cancel {
+		let request = AlpacaAPI.Path.clock
+			.request(endpoint: api.endpoint, version: api.version)
+			.authenticate(with: api.key)
+		return api.cancellableDataTask(for: request, completion)
+	}
+
 }
